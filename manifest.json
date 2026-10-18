@@ -3,7 +3,7 @@
   "short_name": "XC Train Delay",
   "description": "CrossCountry train delay reporting form",
   "display": "standalone",
-  "start_url": "./index.html",
+  "start_url": "./index.html?app_id=xc-train-delay-standalone-2026-10",
   "scope": "./",
   "theme_color": "#A50034",
   "background_color": "#A50034",
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./?app_id=xc-train-delay-standalone-2026-10"
 }

@@ -3,8 +3,8 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#A50034"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="./manifest.json"><title>Train Delay Report</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f4f5;color:#333;font-family:Arial,Helvetica,sans-serif}.container{max-width:620px;margin:0 auto;background:#fff;min-height:100vh}.header{background:linear-gradient(135deg,#A50034,#d10a4b);color:#fff;padding:22px 24px 25px;border-bottom:5px solid #F5C400}.header h1{font-size:27px;margin:0 0 10px}.header p{font-size:16px;line-height:1.5;margin:0;color:#fff}.form{padding:10px 24px 24px}label{display:block;font-weight:600;margin:18px 0 8px;font-size:16px}input,select,textarea{display:block;width:100%;font:16px Arial,sans-serif;color:#444;background:#fff;border:1px solid #d1d5d8;border-radius:13px;padding:16px;min-height:58px}textarea{height:150px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #F5C400;border-color:#A50034}.required{color:#b72d43}.btn{width:100%;border:0;border-radius:13px;padding:18px 12px;margin-top:14px;font-size:17px;font-weight:bold;cursor:pointer}.copy{background:#A50034;color:#fff}.email{background:#F5C400;color:#222}.print{background:#e8edf1;color:#222}.message{font-size:14px;color:#555;min-height:20px;margin-top:10px}.preview{display:none;white-space:pre-wrap;background:#f5f6f7;border:1px solid #ddd;border-radius:10px;padding:14px;margin-top:16px}.small{font-size:12px;color:#777;margin-top:18px}@media(max-width:400px){.header{padding:20px 20px 23px}.form{padding:8px 20px 22px}.header h1{font-size:25px}}@media print{body,.container{background:#fff}.header{background:#fff!important;color:#111;border-bottom:2px solid #999;padding:10px 0}.header p{color:#333}.btn,.message{display:none!important}.form{padding:0}input,select,textarea{border:1px solid #999;min-height:0;padding:8px}.small{display:none}}
-</style></head><body><main class="container"><header class="header"><h1>Train Delay Report</h1><p>This report is to email your line manager about on-the-day delays.</p></header><form class="form" id="delayForm">
+*{box-sizing:border-box}body{margin:0;background:#f3f4f5;color:#333;font-family:Arial,Helvetica,sans-serif}.container{max-width:620px;margin:0 auto;background:#fff;min-height:100vh}.header{background:linear-gradient(135deg,#A50034,#d10a4b);color:#fff;padding:22px 24px 25px;border-bottom:5px solid #F5C400}.header h1{font-size:27px;margin:0 0 10px}.header p{font-size:16px;line-height:1.5;margin:0;color:#fff}.form{padding:10px 24px 24px}label{display:block;font-weight:600;margin:18px 0 8px;font-size:16px}input,select,textarea{display:block;width:100%;font:16px Arial,sans-serif;color:#444;background:#fff;border:1px solid #d1d5d8;border-radius:13px;padding:16px;min-height:58px}textarea{height:150px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #F5C400;border-color:#A50034}.required{color:#b72d43}.btn{width:100%;border:0;border-radius:13px;padding:18px 12px;margin-top:14px;font-size:17px;font-weight:bold;cursor:pointer}.install{background:#F5C400;color:#222}.copy{background:#A50034;color:#fff}.email{background:#F5C400;color:#222}.print{background:#e8edf1;color:#222}.message{font-size:14px;color:#555;min-height:20px;margin-top:10px}.preview{display:none;white-space:pre-wrap;background:#f5f6f7;border:1px solid #ddd;border-radius:10px;padding:14px;margin-top:16px}.small{font-size:12px;color:#777;margin-top:18px}@media(max-width:400px){.header{padding:20px 20px 23px}.form{padding:8px 20px 22px}.header h1{font-size:25px}}@media print{body,.container{background:#fff}.header{background:#fff!important;color:#111;border-bottom:2px solid #999;padding:10px 0}.header p{color:#333}.btn,.message{display:none!important}.form{padding:0}input,select,textarea{border:1px solid #999;min-height:0;padding:8px}.small{display:none}}
+</style></head><body><main class="container"><header class="header"><h1>Train Delay Report</h1><p>This report is to email your line manager about on-the-day delays.</p></header><div id="installWrap" style="padding:12px 24px 0;display:none"><button class="btn install" id="installBtn" type="button" style="margin-top:0">＋ Install XC Train Delay App</button><div id="installHelp" class="message" style="display:none"></div></div><form class="form" id="delayForm">
 <label for="date">Date</label><input id="date" type="date" required>
 <label for="headcode">Headcode <span class="required">*</span></label><input id="headcode" type="text" placeholder="e.g. 1V50" required autocapitalize="characters">
 <label for="minutes">Delay in Minutes <span class="required">*</span></label><input id="minutes" type="number" inputmode="numeric" min="1" max="999" step="1" maxlength="3" placeholder="e.g. 15" required aria-describedby="minutesHelp"><div id="minutesHelp" class="small" style="margin-top:5px">Enter a whole number, maximum 3 digits.</div>
@@ -50,7 +50,38 @@ function validate(){const mins=$('minutes').value;if(!$('date').value||!$('headc
 $('copyBtn').addEventListener('click',async()=>{if(!validate())return;const text=report();try{await navigator.clipboard.writeText(text);$('message').textContent='Report copied to clipboard.'}catch(e){$('preview').style.display='block';$('preview').textContent=text;$('message').textContent='Select and copy the report shown below.'}});
 $('emailBtn').addEventListener('click',()=>{if(!validate())return;const body=report();$('preview').style.display='block';$('preview').textContent=body;const subject=`Train Delay: ${$('headcode').value.trim().toUpperCase()} of ${$('minutes').value} mins on ${dateText($('date').value,true)}`;$('message').textContent='Opening your email app with the report prepared.';location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)});
 $('printBtn').addEventListener('click',()=>{if(!validate())return;$('preview').style.display='block';$('preview').textContent=report();window.print()});
-if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
+// PWA install prompt: show only while the app is not already installed.
+let deferredInstallPrompt = null;
+const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+if (!standalone) {
+  $('installWrap').style.display = 'block';
+  const installHelp = $('installHelp');
+  function showInstallHelp(message) { installHelp.textContent = message; installHelp.style.display = 'block'; }
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    $('installBtn').style.display = 'block';
+    installHelp.style.display = 'none';
+  });
+  $('installBtn').addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      if (choice && choice.outcome === 'accepted') $('installWrap').style.display = 'none';
+      return;
+    }
+    if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+      showInstallHelp('To install on iPhone: tap Share in Safari, then choose “Add to Home Screen”.');
+    } else {
+      showInstallHelp('If installation is available, open your browser menu and choose “Install app” or “Add to Home Screen”.');
+    }
+  });
+  window.addEventListener('appinstalled', () => { $('installWrap').style.display = 'none'; });
+  // iOS does not support beforeinstallprompt; offer manual install instructions.
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) $('installBtn').style.display = 'block';
+}
+if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?app_id=xc-train-delay-standalone-2026-10').catch(()=>{}));}
 
 function nonEmptyReport(text) {
   return text.split(/\r?\n/).filter(line => {
