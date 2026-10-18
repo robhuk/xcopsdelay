@@ -1,282 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Train Delay Report</title>
+<html lang="en"><head>
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#A50034"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="./manifest.json"><title>Train Delay Report</title>
 <style>
-  :root{
-    --xc-red:#d71920;
-    --xc-gold:#f5b400;
-    --dark:#222;
-    --light:#f5f5f5;
-    --border:#d6d6d6;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-    background:#eee;
-    color:var(--dark);
-  }
-  .wrap{max-width:620px;margin:0 auto;padding:14px}
-  .card{
-    background:#fff;border-radius:14px;overflow:hidden;
-    box-shadow:0 3px 14px rgba(0,0,0,.12);
-  }
-  header{
-    background:linear-gradient(135deg,var(--xc-red),#b50f16);
-    color:#fff;padding:20px 18px 18px;
-    border-bottom:5px solid var(--xc-gold);
-  }
-  header h1{margin:0;font-size:27px;line-height:1.1}
-  header p{margin:7px 0 0;font-size:14px;line-height:1.4;opacity:.96}
-  form{padding:18px}
-  .field{margin-bottom:17px}
-  label{
-    display:block;font-weight:700;font-size:15px;margin-bottom:7px;
-  }
-  input,select,textarea{
-    width:100%;font:inherit;font-size:16px;
-    border:1px solid var(--border);border-radius:9px;
-    padding:12px;background:#fff;color:#222;
-    outline:none;
-  }
-  input:focus,select:focus,textarea:focus{
-    border-color:var(--xc-red);
-    box-shadow:0 0 0 3px rgba(215,25,32,.12);
-  }
-  input[type="number"]{font-size:20px;font-weight:700}
-  textarea{min-height:105px;resize:vertical}
-  .hidden{display:none}
-  .buttons{display:grid;gap:10px;margin-top:20px}
-  button{
-    border:0;border-radius:10px;padding:14px 16px;
-    font:inherit;font-weight:800;font-size:16px;cursor:pointer;
-    min-height:50px;
-  }
-  .primary{background:var(--xc-red);color:#fff}
-  .secondary{background:var(--xc-gold);color:#222}
-  button:active{transform:translateY(1px)}
-  .status{
-    min-height:20px;text-align:center;font-size:13px;
-    font-weight:700;margin-top:10px;
-  }
-  .preview{
-    margin-top:18px;padding:13px;background:var(--light);
-    border-left:4px solid var(--xc-red);border-radius:7px;
-    font-size:13px;line-height:1.45;
-  }
-  .preview strong{display:block;margin-bottom:5px}
-  .required{color:var(--xc-red)}
-  footer{text-align:center;font-size:11px;color:#666;padding:0 18px 18px}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="card">
-    <header>
-      <h1>Train Delay Report</h1>
-      <p>This report is to email your line manager about on-the-day delays.</p>
-    </header>
-
-    <form id="delayForm" onsubmit="return false;">
-      <div class="field">
-        <label for="date">Date</label>
-        <input id="date" type="date">
-      </div>
-
-      <div class="field">
-        <label for="headcode">Headcode <span class="required">*</span></label>
-        <input id="headcode" type="text" placeholder="e.g. 1V50" autocapitalize="characters" autocomplete="off" required>
-      </div>
-
-      <div class="field">
-        <label for="delay">Delay in Minutes <span class="required">*</span></label>
-        <input id="delay" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" placeholder="e.g. 15" required>
-      </div>
-
-      <div class="field">
-        <label for="cause">Cause <span class="required">*</span></label>
-        <select id="cause" required>
-          <option value="Other">Other</option>
-          <option>Passenger issues</option>
-          <option>Passenger assistance / PRM</option>
-          <option>Passenger loading / alighting</option>
-          <option>Door / dispatch issue</option>
-          <option>Train crew</option>
-          <option>Train operating / working practices</option>
-          <option>Signalling</option>
-          <option>Points / point failure</option>
-          <option>Track / permanent way</option>
-          <option>Level crossing</option>
-          <option>Power supply / electrical</option>
-          <option>Overhead line equipment</option>
-          <option>Rolling stock / train fault</option>
-          <option>Fleet / unit availability</option>
-          <option>Station / platform</option>
-          <option>Congestion / regulation</option>
-          <option>Previous late running</option>
-          <option>Timetable / planning</option>
-          <option>Network Rail infrastructure</option>
-          <option>Weather / environmental conditions</option>
-          <option>Animals / trespass / vandalism</option>
-          <option>Emergency services</option>
-          <option>Police / security incident</option>
-          <option>Fatality / person on railway</option>
-          <option>External incident</option>
-          <option>Engineering works</option>
-          <option>Infrastructure restrictions</option>
-          <option>Other railway operator</option>
-        </select>
-      </div>
-
-      <div class="field hidden" id="otherCauseWrap">
-        <label for="otherCause">Other cause <span class="required">*</span></label>
-        <input id="otherCause" type="text" placeholder="Enter the cause">
-      </div>
-
-      <div class="field">
-        <label for="control">Control desk aware?</label>
-        <select id="control">
-          <option value="No — Minor">No — Minor</option>
-          <option value="Yes — SNE">Yes — SNE</option>
-          <option value="Yes — MMA">Yes — MMA</option>
-          <option value="Yes — South Coast">Yes — South Coast</option>
-          <option value="Yes — South West">Yes — South West</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="comments">Comments</label>
-        <textarea id="comments" placeholder="Additional information (optional)"></textarea>
-      </div>
-
-      <div class="buttons">
-        <button type="button" class="primary" id="copyClipboard">📋 Copy to Clipboard</button>
-        <button type="button" class="secondary" id="copyEmail">✉️ Copy to Email / Open Outlook</button>
-      </div>
-      <div class="status" id="status" aria-live="polite"></div>
-
-      <div class="preview">
-        <strong>Email preview</strong>
-        <div id="previewText">Complete the form above to preview the email.</div>
-      </div>
-    </form>
-    <footer>Train Delay Report</footer>
-  </div>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f5;color:#333;font-family:Arial,Helvetica,sans-serif}.container{max-width:620px;margin:0 auto;background:#fff;min-height:100vh}.header{background:linear-gradient(135deg,#A50034,#d10a4b);color:#fff;padding:22px 24px 25px;border-bottom:5px solid #F5C400}.header h1{font-size:27px;margin:0 0 10px}.header p{font-size:16px;line-height:1.5;margin:0;color:#fff}.form{padding:10px 24px 24px}label{display:block;font-weight:600;margin:18px 0 8px;font-size:16px}input,select,textarea{display:block;width:100%;font:16px Arial,sans-serif;color:#444;background:#fff;border:1px solid #d1d5d8;border-radius:13px;padding:16px;min-height:58px}textarea{height:150px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #F5C400;border-color:#A50034}.required{color:#b72d43}.btn{width:100%;border:0;border-radius:13px;padding:18px 12px;margin-top:14px;font-size:17px;font-weight:bold;cursor:pointer}.copy{background:#A50034;color:#fff}.email{background:#F5C400;color:#222}.print{background:#e8edf1;color:#222}.message{font-size:14px;color:#555;min-height:20px;margin-top:10px}.preview{display:none;white-space:pre-wrap;background:#f5f6f7;border:1px solid #ddd;border-radius:10px;padding:14px;margin-top:16px}.small{font-size:12px;color:#777;margin-top:18px}@media(max-width:400px){.header{padding:20px 20px 23px}.form{padding:8px 20px 22px}.header h1{font-size:25px}}@media print{body,.container{background:#fff}.header{background:#fff!important;color:#111;border-bottom:2px solid #999;padding:10px 0}.header p{color:#333}.btn,.message{display:none!important}.form{padding:0}input,select,textarea{border:1px solid #999;min-height:0;padding:8px}.small{display:none}}
+</style></head><body><main class="container"><header class="header"><h1>Train Delay Report</h1><p>This report is to email your line manager about on-the-day delays.</p></header><form class="form" id="delayForm">
+<label for="date">Date</label><input id="date" type="date" required>
+<label for="headcode">Headcode <span class="required">*</span></label><input id="headcode" type="text" placeholder="e.g. 1V50" required autocapitalize="characters">
+<label for="minutes">Delay in Minutes <span class="required">*</span></label><input id="minutes" type="number" inputmode="numeric" min="1" max="999" step="1" maxlength="3" placeholder="e.g. 15" required aria-describedby="minutesHelp"><div id="minutesHelp" class="small" style="margin-top:5px">Enter a whole number, maximum 3 digits.</div>
+<label for="cause">Cause <span class="required">*</span></label><select id="cause" required><option value="Other" selected>Other</option><option>Signalling</option><option>Train fault</option><option>Crew issue</option><option>BTP attendance</option><option>Passenger assistance</option><option>Station duties</option><option>Passenger incident</option><option>Door fault</option><option>Dispatch issue</option><option>Congestion / regulation</option><option>TSR / infrastructure</option><option>Weather</option><option>External incident</option></select>
+<label for="control">Control desk aware?</label><select id="control"><option>No – Minor</option><option>Yes – Control informed</option><option>Not sure</option><option>Not applicable</option></select>
+<label for="comments">Comments</label><textarea id="comments" placeholder="Additional information (optional)"></textarea>
+<button class="btn copy" type="button" id="copyBtn">▣ Copy to Clipboard</button><button class="btn email" type="button" id="emailBtn">✉ Copy to Email / Open Outlook</button><button class="btn print" type="button" id="printBtn">▤ Print / Save PDF</button><div class="message" id="message" role="status"></div><div class="preview" id="preview"></div><p class="small">Draft saves automatically on this device. Offline use is available after the app has loaded once. Please check all details before sending; this form does not submit automatically.</p>
+</form></main>
+<div id="otherModal" role="dialog" aria-modal="true" aria-labelledby="otherTitle" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;padding:20px;align-items:center;justify-content:center">
+ <div style="width:100%;max-width:460px;background:#fff;border-radius:16px;padding:22px;box-shadow:0 12px 40px #0004">
+  <h2 id="otherTitle" style="margin:0 0 8px;font-size:22px">Reason for delay</h2><p style="margin:0 0 12px;line-height:1.45;color:#555">Please explain the reason for selecting Other.</p>
+  <label for="otherReason" style="margin-top:8px">Reason <span class="required">*</span></label><textarea id="otherReason" placeholder="Enter the reason for the delay" style="height:120px"></textarea>
+  <button type="button" class="btn copy" id="saveOther" style="margin-top:12px">Save reason</button><button type="button" class="btn print" id="cancelOther" style="margin-top:8px">Cancel</button>
+ </div>
 </div>
-
 <script>
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+const DRAFT_KEY='xc-train-delay-draft-v3';
+function saveDraft(){try{const draft={};['date','headcode','minutes','cause','control','comments','otherReason'].forEach(id=>draft[id]=id==='otherReason'?otherReason:$(id).value);localStorage.setItem(DRAFT_KEY,JSON.stringify(draft));$('message').textContent='Draft saved on this device.';}catch(e){$('message').textContent='Device storage unavailable; keep this page open until you have copied the report.';}}
+function restoreDraft(){try{const raw=localStorage.getItem(DRAFT_KEY);if(!raw)return;const d=JSON.parse(raw);['date','headcode','minutes','cause','control','comments'].forEach(id=>{if(d[id]!==undefined&&d[id]!==null)$(id).value=d[id]});if(d.otherReason)otherReason=d.otherReason;}catch(e){}}
 
-function localDate(){
-  const d = new Date();
-  const offset = d.getTimezoneOffset();
-  return new Date(d.getTime() - offset*60000).toISOString().slice(0,10);
-}
-$("date").value = localDate();
+const today=new Date();$('date').value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+let otherReason='';
+restoreDraft();
+if(!$('date').value)$('date').value=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+function dateText(v,shortYear=false){if(!v)return '';const [y,m,d]=v.split('-');return `${d}/${m}/${shortYear?y.slice(-2):y}`}
+$('minutes').addEventListener('input',()=>{let v=$('minutes').value.replace(/\D/g,'').slice(0,3);$('minutes').value=v;saveDraft();});
+['date','headcode','cause','control','comments','otherReason'].forEach(id=>$(id).addEventListener('input',saveDraft));
+['date','headcode','cause','control'].forEach(id=>$(id).addEventListener('change',saveDraft));
+$('cause').addEventListener('change',()=>{if($('cause').value==='Other'){ $('otherReason').value=otherReason; $('otherModal').style.display='flex'; setTimeout(()=>$('otherReason').focus(),50); }});
+$('saveOther').addEventListener('click',()=>{const v=$('otherReason').value.trim();if(!v){$('message').textContent='Please enter the reason for selecting Other.';$('otherReason').focus();return;}otherReason=v;$('otherModal').style.display='none';$('message').textContent='Custom delay reason saved.';saveDraft();});
+$('cancelOther').addEventListener('click',()=>{if(!otherReason){$('cause').value='Signalling';}else{$('otherReason').value=otherReason;}$('otherModal').style.display='none';});
+function report(){const cause=$('cause').value==='Other'?(otherReason||$('otherReason').value.trim()):$('cause').value;return `Hello - please find some delay information / attribution for the following service…
 
-$("headcode").addEventListener("input", e => {
-  e.target.value = e.target.value.toUpperCase();
-  updatePreview();
-});
-["date","delay","comments","control"].forEach(id => $(id).addEventListener("input", updatePreview));
-$("cause").addEventListener("change", () => {
-  const isOther = $("cause").value === "Other";
-  $("otherCauseWrap").classList.toggle("hidden", !isOther);
-  $("otherCause").required = isOther;
-  updatePreview();
-});
-$("otherCause").addEventListener("input", updatePreview);
+Date: ${dateText($('date').value)}
+Headcode: ${$('headcode').value.trim().toUpperCase()}
+Delay: ${$('minutes').value} minutes
+Cause: ${cause}
+Control desk aware: ${$('control').value}${$('comments').value.trim()?'\nComments: '+$('comments').value.trim():''}
 
-function displayDate(){
-  const value = $("date").value;
-  if(!value) return "";
-  const [y,m,d] = value.split("-");
-  return `${d}/${m}/${y}`;
-}
-function causeText(){
-  return $("cause").value === "Other" ? $("otherCause").value.trim() : $("cause").value;
-}
-function buildEmail(){
-  const headcode = $("headcode").value.trim().toUpperCase();
-  const delay = $("delay").value.trim();
-  const date = displayDate();
-  const reason = causeText();
-  const comments = $("comments").value.trim();
-  const control = $("control").value;
+Kind regards,`;}
+function validate(){const mins=$('minutes').value;if(!$('date').value||!$('headcode').value.trim()||!mins||!/^\d{1,3}$/.test(mins)||Number(mins)<1||Number(mins)>999){$('message').textContent='Please enter a date, headcode and delay of 1–999 whole minutes.';return false}if($('cause').value==='Other'&&!otherReason.trim()){$('otherModal').style.display='flex';$('message').textContent='Please provide the reason for the delay.';$('otherReason').focus();return false}return true}
+$('copyBtn').addEventListener('click',async()=>{if(!validate())return;const text=report();try{await navigator.clipboard.writeText(text);$('message').textContent='Report copied to clipboard.'}catch(e){$('preview').style.display='block';$('preview').textContent=text;$('message').textContent='Select and copy the report shown below.'}});
+$('emailBtn').addEventListener('click',()=>{if(!validate())return;const body=report();$('preview').style.display='block';$('preview').textContent=body;const subject=`Train Delay: ${$('headcode').value.trim().toUpperCase()} of ${$('minutes').value} mins on ${dateText($('date').value,true)}`;$('message').textContent='Opening your email app with the report prepared.';location.href='mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)});
+$('printBtn').addEventListener('click',()=>{if(!validate())return;$('preview').style.display='block';$('preview').textContent=report();window.print()});
+if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
 
-  let body = `Hi, for info purposes please find a summary of a delay to ${headcode} on ${date}, this was due to ${reason}`;
-  if(comments) body += ` - ${comments}`;
-  body += `\n\nThe Train was delayed by ${delay} minutes by this.`;
-  if(control.startsWith("No")) {
-    body += `\nControl were not informed (Minor).`;
-  } else {
-    body += `\nControl were informed (${control.replace("Yes — ","")}).`;
-  }
-  return {
-    subject:`Delay of ${delay} mins on ${headcode} - ${date}`,
-    body
-  };
+function nonEmptyReport(text) {
+  return text.split(/\r?\n/).filter(line => {
+    const m = line.match(/^\s*([^:]+):\s*(.*?)\s*$/);
+    return !m || m[2] !== '';
+  }).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
-function validate(){
-  const form = $("delayForm");
-  if(!form.checkValidity()){
-    form.reportValidity();
-    return false;
-  }
-  if($("cause").value === "Other" && !$("otherCause").value.trim()){
-    $("otherCause").focus();
-    $("otherCause").reportValidity();
-    return false;
-  }
-  return true;
-}
-function updatePreview(){
-  const headcode = $("headcode").value.trim().toUpperCase();
-  const delay = $("delay").value.trim();
-  const date = displayDate();
-  const reason = causeText();
-  if(!headcode || !delay || !date || !reason){
-    $("previewText").textContent = "Complete the form above to preview the email.";
-    return;
-  }
-  const e = buildEmail();
-  $("previewText").textContent = `Subject: ${e.subject}\n\n${e.body}`;
-}
-async function copyText(text){
-  if(navigator.clipboard && window.isSecureContext){
-    await navigator.clipboard.writeText(text);
-  }else{
-    const ta=document.createElement("textarea");
-    ta.value=text; document.body.appendChild(ta);
-    ta.select(); document.execCommand("copy"); ta.remove();
-  }
-}
-function status(msg){
-  $("status").textContent = msg;
-  setTimeout(()=>{$("status").textContent=""},2500);
-}
-$("copyClipboard").addEventListener("click", async ()=>{
-  if(!validate()) return;
-  const e = buildEmail();
-  try{
-    await copyText(`Subject: ${e.subject}\n\n${e.body}`);
-    status("Email copied to clipboard ✓");
-  }catch(err){
-    status("Unable to copy automatically.");
-  }
-});
-$("copyEmail").addEventListener("click", async ()=>{
-  if(!validate()) return;
-  const e = buildEmail();
-  try{
-    await copyText(e.body);
-  }catch(err){}
-  window.location.href = `mailto:?subject=${encodeURIComponent(e.subject)}&body=${encodeURIComponent(e.body)}`;
-});
-updatePreview();
-</script>
-</body>
-</html>
+</script></body></html>
